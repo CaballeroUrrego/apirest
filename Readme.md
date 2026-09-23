@@ -1,3 +1,5 @@
+# AUTOR : Sebastian Urrego-Desarollador de software 
+
 # JDBC
 
 **Java Database Connectivity** es una **API** (Interfaz de Programación de Aplicaciones) de **Java** que proporciona un conjunto de clases e interfaces para interactuar con **bases de datos relacionales** desde aplicaciones **Java**.
@@ -98,3 +100,114 @@ Crear y probar una API REST para administrar productos mediante operaciones CRUD
 * Maven
 * Visual Studio Code
 * Postman
+
+## Inicialización del proyecto
+
+### Requisitos
+
+Antes de iniciar el proyecto, instala las siguientes herramientas:
+
+* Java 21
+* Docker Desktop
+* Visual Studio Code
+* Postman, para probar la API
+
+Comprueba que Java y Docker estén disponibles:
+
+```powershell
+java -version
+docker --version
+docker compose version
+```
+
+### Configuración del archivo `.env`
+
+En la raíz del proyecto debe existir un archivo llamado `.env` con la configuración de PostgreSQL:
+
+```env
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/databaseProducto
+SPRING_DATASOURCE_USERNAME=postgres
+SPRING_DATASOURCE_PASSWORD=postgres
+SPRING_DATASOURCE_DB=databaseProducto
+```
+
+> No publiques el archivo `.env` en repositorios públicos porque contiene credenciales de acceso.
+
+### Iniciar PostgreSQL con Docker
+
+Abre PowerShell en la carpeta raíz del proyecto, donde están `docker-compose.yml` y `.env`:
+
+```powershell
+docker compose up -d
+```
+
+Este comando descarga la imagen `postgres:16` si es necesario, crea el contenedor `apirest-postgres` y expone PostgreSQL en el puerto `5432`.
+
+Comprueba que el contenedor esté funcionando:
+
+```powershell
+docker compose ps
+```
+
+Para consultar los registros de PostgreSQL:
+
+```powershell
+docker compose logs -f postgres
+```
+
+Presiona `Ctrl+C` para salir de los registros. El contenedor seguirá ejecutándose.
+
+
+
+La API estará disponible en:
+
+```text
+http://localhost:8080
+```
+
+También puedes iniciar la aplicación desde Visual Studio Code ejecutando la clase `ApirestApplication`.
+
+### Probar la API en Postman
+
+La ruta base es:
+
+```text
+http://localhost:8080/Productos
+```
+
+| Operación | Método | URL |
+|---|---|---|
+| Obtener todos los productos | `GET` | `http://localhost:8080/Productos` |
+| Obtener un producto | `GET` | `http://localhost:8080/Productos/1` |
+| Crear un producto | `POST` | `http://localhost:8080/Productos` |
+| Actualizar un producto | `PUT` | `http://localhost:8080/Productos/1` |
+| Eliminar un producto | `DELETE` | `http://localhost:8080/Productos/1` |
+
+Para las peticiones `POST` y `PUT`, selecciona **Body > raw > JSON** y utiliza:
+
+```json
+{
+	"nombre": "Laptop",
+	"precio": 899.99
+}
+```
+
+Añade el encabezado:
+
+```text
+Content-Type: application/json
+```
+
+
+
+Para detener la aplicación Spring Boot, presiona `Ctrl+C` en la terminal donde está ejecutándose.
+
+Para detener PostgreSQL:
+
+```powershell
+docker compose down
+```
+
+Los datos se conservan en la carpeta `postgres/` gracias al volumen configurado en `docker-compose.yml`.
+
+> No elimines la carpeta `postgres/` si quieres conservar los datos de la base de datos.
